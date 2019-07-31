@@ -14,6 +14,7 @@ class Board extends React.Component {
   renderSquare(i) {
     return (
       <Square
+        key={i}
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
       />
@@ -21,25 +22,38 @@ class Board extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
+    let boardRows = [];
+    let index = 0;
+    for (let a = 0; a < 3; a++) {
+      let squares = [];
+      for (let b = 0; b < 3; b++) {
+        squares.push(this.renderSquare(index));
+        index += 1;
+      }
+      let boardRow = (<div className="board-row">{squares}</div>);
+      boardRows.push(boardRow)
+    }
+    let board = (<div>{boardRows}</div>);
+    return board;
+//    return (
+//      <div>
+//        <div className="board-row">
+//          {this.renderSquare(0)}
+//          {this.renderSquare(1)}
+//          {this.renderSquare(2)}
+//        </div>
+//        <div className="board-row">
+//          {this.renderSquare(3)}
+//          {this.renderSquare(4)}
+//          {this.renderSquare(5)}
+//        </div>
+//        <div className="board-row">
+//          {this.renderSquare(6)}
+//          {this.renderSquare(7)}
+//          {this.renderSquare(8)}
+//        </div>
+//      </div>
+//    );
   }
 }
 
@@ -87,15 +101,22 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ?
+      let desc = move ?
         'Go to move #' + move + ` (${this.state.history[move].lastMove})` :
         'Go to game start';
-        console.log(step);
+      if (move === this.state.stepNumber) {
+        return (
+          <li key={move}>
+            <button onClick={() => this.jumpTo(move)}><b>{desc}</b></button>
+          </li>
+        );
+      } else {
         return (
           <li key={move}>
             <button onClick={() => this.jumpTo(move)}>{desc}</button>
           </li>
         );
+      }
     });
 
     let status;
