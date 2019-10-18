@@ -2,6 +2,41 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import'./index.css';
 
+/* Helper functions */
+
+function convertToColRow(i) {
+  const squareNum = i + 1;
+  let column = squareNum % 3;
+  if (column === 0) {
+    column = 3;
+  }
+  const row = Math.ceil(squareNum / 3);
+  return `${column}, ${row}`;
+}
+
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
+
+
+/* Components */
+
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -10,51 +45,30 @@ function Square(props) {
   );
 }
 
-class Board extends React.Component {
-  renderSquare(i) {
+function Board(props) {
+  function renderSquare(i) {
     return (
       <Square
         key={i}
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)}
+        value={props.squares[i]}
+        onClick={() => props.onClick(i)}
       />
-    );
+    )
   }
 
-  render() {
-    let boardRows = [];
-    let index = 0;
-    for (let a = 0; a < 3; a++) {
-      let squares = [];
-      for (let b = 0; b < 3; b++) {
-        squares.push(this.renderSquare(index));
-        index += 1;
-      }
-      let boardRow = (<div className="board-row">{squares}</div>);
-      boardRows.push(boardRow)
+  let boardRows = [];
+  let index = 0;
+  for (let a = 0; a < 3; a++) {
+    let squares = [];
+    for (let b = 0; b < 3; b++) {
+      squares.push(renderSquare(index));
+      index += 1;
     }
-    let board = (<div>{boardRows}</div>);
-    return board;
-//    return (
-//      <div>
-//        <div className="board-row">
-//          {this.renderSquare(0)}
-//          {this.renderSquare(1)}
-//          {this.renderSquare(2)}
-//        </div>
-//        <div className="board-row">
-//          {this.renderSquare(3)}
-//          {this.renderSquare(4)}
-//          {this.renderSquare(5)}
-//        </div>
-//        <div className="board-row">
-//          {this.renderSquare(6)}
-//          {this.renderSquare(7)}
-//          {this.renderSquare(8)}
-//        </div>
-//      </div>
-//    );
+    let boardRow = (<div className="board-row">{squares}</div>);
+    boardRows.push(boardRow)
   }
+  let board = (<div>{boardRows}</div>);
+  return board;
 }
 
 class Game extends React.Component {
@@ -142,38 +156,6 @@ class Game extends React.Component {
     );
   }
 }
-
-function convertToColRow(i) {
-  const squareNum = i + 1;
-  let column = squareNum % 3;
-  if (column === 0) {
-    column = 3;
-  }
-  const row = Math.ceil(squareNum / 3);
-  return `${column}, ${row}`;
-}
-
-
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-}
-
 
 // ========================================
 
